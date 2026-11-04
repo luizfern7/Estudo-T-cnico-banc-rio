@@ -16,21 +16,23 @@ const { outputFiles } = await build({
       export const Directory = { Cache: 'CACHE' };
       export const Encoding = { UTF8: 'utf8' };
       export const Share = native.Share;
+      export const App = native.App;
     ` }));
   } }],
 });
 
-function setup({ nativePlatform = true, writeError, shareError } = {}) {
+function setup({ nativePlatform = true, writeError, shareError, backButton, homeButton } = {}) {
   let listener;
   const calls = { files: [], shares: [], alerts: [] };
   const progress = { theme: 'dark', done: { lesson1: true }, notes: { lesson1: 'Revisar' } };
   const context = {
     native: {
       Capacitor: { isNativePlatform: () => nativePlatform },
+      App: { addListener(name, handler) { assert.equal(name, 'backButton'); calls.back = handler; }, minimizeApp() { calls.minimized = true; } },
       Filesystem: { writeFile: async file => { calls.files.push(file); if (writeError) throw writeError; return { uri: 'file:///cache/backup.json' }; } },
       Share: { share: async options => { calls.shares.push(options); if (shareError) throw shareError; } },
     },
-    document: { addEventListener: (type, handler, capture) => { assert.equal(type, 'click'); assert.equal(capture, true); listener = handler; } },
+    document: { querySelector: selector => selector.includes('back-link') ? backButton : homeButton, addEventListener: (type, handler, capture) => { assert.equal(type, 'click'); assert.equal(capture, true); listener = handler; } },
     localStorage: { getItem: key => { assert.equal(key, 'banestes2026_plataforma_v1'); return JSON.stringify(progress); } },
     alert: message => calls.alerts.push(message),
   };
@@ -72,4 +74,27 @@ test('cancelling sharing does not show a failure alert', async () => {
   const { listener, event, calls } = setup({ shareError: new Error('Share canceled') });
   await listener(event);
   assert.deepEqual(calls.alerts, []);
+});
+
+
+test('Android back button uses the current screen back action', () => {
+  let clicked = false;
+  const { calls } = setup({ backButton: { click() { clicked = true; } } });
+  calls.back();
+  assert.equal(clicked, true);
+  assert.equal(calls.minimized, undefined);
+});
+
+test('Android back button returns from a hub to the path', () => {
+  let clicked = false;
+  const { calls } = setup({ homeButton: { classList: { contains: () => false }, click() { clicked = true; } } });
+  calls.back();
+  assert.equal(clicked, true);
+  assert.equal(calls.minimized, undefined);
+});
+
+test('Android back button on the path minimizes the app', () => {
+  const { calls } = setup({ homeButton: { classList: { contains: () => true } } });
+  calls.back();
+  assert.equal(calls.minimized, true);
 });

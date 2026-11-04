@@ -1,9 +1,19 @@
 import { Capacitor } from '@capacitor/core';
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import { Share } from '@capacitor/share';
+import { App } from '@capacitor/app';
 
 // Keep the original HTML's desktop export intact. Android shares a real file.
 if (Capacitor.isNativePlatform()) {
+  App.addListener('backButton', () => {
+    const back = document.querySelector('.back-link:not([hidden])');
+    if (back) back.click();
+    else {
+      const home = document.querySelector('.journey-nav [data-page="dashboard"]');
+      if (home && !home.classList.contains('active')) home.click();
+      else App.minimizeApp();
+    }
+  });
   document.addEventListener('click', async (event) => {
     const button = event.target.closest?.('[data-act="export"]');
     if (!button) return;

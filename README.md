@@ -49,4 +49,20 @@ Após editar o HTML ou a integração, execute `npm run sync:android` antes de c
 npm test
 ```
 
-Os quatro testes verificam o backup JSON nativo, a preservação da exportação no navegador, falha de escrita e cancelamento do compartilhamento. Eles usam plugins simulados; não substituem testes de instalação, seletor de arquivos e compartilhamento em um Android real.
+Os sete testes verificam backup JSON, exportação no navegador, falha de escrita, cancelamento do compartilhamento e comportamento do botão Voltar do Android. Eles usam plugins simulados; não substituem testes de instalação, seletor de arquivos e compartilhamento em um Android real.
+
+## Trilha de aprendizagem (versão 1.1)
+
+A tela inicial mostra a primeira aula ainda não concluída. As aulas são liberadas em sequência; etapas já concluídas continuam abertas para revisão. O avanço exige pelo menos 90% de leitura e resposta aos exercícios integrados, mantendo os critérios do conteúdo original. Depois da conclusão, uma tela oferece acesso direto à próxima aula.
+
+As três entradas principais são Trilha, Praticar e Mais. Questões, simulados e revisões ficam em Praticar; caderno, biblioteca, estatísticas, preferências e backup ficam em Mais. Dentro da aula, as ferramentas complementares ficam recolhidas. Todas as 112 aulas, 185 questões, 8 materiais e 10 estudos de caso dos 18 módulos foram preservados.
+
+O formato de backup e a chave de armazenamento existentes são mantidos. Atualizações com o mesmo identificador e a mesma chave de assinatura preservam os dados. Não desinstale o aplicativo anterior para atualizar; faça um backup antes. A posição de leitura é retomada ao tocar em Continuar aula. O botão Voltar do Android retorna à navegação anterior ou minimiza o aplicativo quando a trilha está aberta.
+
+Para executar os seis cenários de interface (incluindo preservação integral do conteúdo, progressão, retomada, último módulo, backup e dimensões móveis):
+
+```sh
+npm run test:ui
+```
+
+É necessário Chromium instalado. O teste usa `/usr/bin/chromium` por padrão; defina `CHROMIUM_PATH` para outro caminho. Os testes de navegador verificam os fluxos web do APK. A instalação e a integração nativa continuam exigindo conferência em um aparelho Android.
