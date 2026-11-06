@@ -32,8 +32,14 @@ for cls,title,name in [('StudyWidget','Minha Evolução · compacto','compact'),
  receiver=ET.SubElement(app,'receiver',{A+'name':'br.com.campusestudos.banestes.evolution.'+cls,A+'exported':'false',A+'label':title})
  intent=ET.SubElement(receiver,'intent-filter');ET.SubElement(intent,'action',{A+'name':'android.appwidget.action.APPWIDGET_UPDATE'})
  ET.SubElement(receiver,'meta-data',{A+'name':'android.appwidget.provider',A+'resource':'@xml/study_widget_'+name+'_info'})
+for permission in ['android.permission.POST_NOTIFICATIONS','android.permission.RECEIVE_BOOT_COMPLETED']:
+ ET.SubElement(manifest.getroot(),'uses-permission',{A+'name':permission})
+receiver=ET.SubElement(app,'receiver',{A+'name':'br.com.campusestudos.banestes.evolution.StreakReminder',A+'exported':'false'})
+intent=ET.SubElement(receiver,'intent-filter')
+for action in ['android.intent.action.BOOT_COMPLETED','android.intent.action.TIME_SET','android.intent.action.TIMEZONE_CHANGED']:
+ ET.SubElement(intent,'action',{A+'name':action})
 manifest.write(decoded/'AndroidManifest.xml',encoding='utf-8',xml_declaration=True)
-yaml=decoded/'apktool.yml';yaml.write_text(yaml.read_text().replace('versionCode: 2','versionCode: 3').replace('versionName: 1.1','versionName: 1.2'))
+yaml=decoded/'apktool.yml';yaml.write_text(yaml.read_text().replace('versionCode: 2','versionCode: 4').replace('versionName: 1.1','versionName: 1.3'))
 # Hook antes de loadWebView carregar a página: interface disponível no primeiro carregamento.
 bridge=next(decoded.glob('smali*/com/getcapacitor/Bridge.smali'));s=bridge.read_text();needle='.method private loadWebView()V\n    .locals 10';assert s.count(needle)==1
 s=s.replace(needle,needle+'\n\n    iget-object v0, p0, Lcom/getcapacitor/Bridge;->webView:Landroid/webkit/WebView;\n\n    invoke-static {v0}, Lbr/com/campusestudos/banestes/evolution/WidgetBridge;->install(Landroid/webkit/WebView;)V')

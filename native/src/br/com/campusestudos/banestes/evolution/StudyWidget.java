@@ -7,6 +7,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
+import android.os.Bundle;
+import android.graphics.Color;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.text.SimpleDateFormat;
@@ -27,10 +29,18 @@ public class StudyWidget extends AppWidgetProvider {
         for(int i=0;i<7;i++){if(dayCount(days,day(monday))>0)week++;monday.add(Calendar.DATE,1);}
         return new int[]{today,week};
     }
-    @Override public void onUpdate(Context c,AppWidgetManager manager,int[] ids){for(int widget:ids)render(c,manager,widget,expanded());}
+    @Override public void onUpdate(Context c,AppWidgetManager manager,int[] ids){for(int widget:ids)render(c,manager,widget,expanded());StreakReminder.schedule(c);}
+    @Override public void onAppWidgetOptionsChanged(Context c,AppWidgetManager manager,int widget,Bundle options){render(c,manager,widget,expanded());}
+    public static boolean useExpanded(boolean expanded,int width,int height){return expanded&&(width==0||width>=200)&&(height==0||height>=110);}
+
     public static void render(Context c,AppWidgetManager manager,int widget,boolean expanded){
         JSONObject s;try{s=new JSONObject(c.getSharedPreferences(PREFS,0).getString("snapshot","{}"));}catch(Exception e){s=new JSONObject();}
+        Bundle options=manager.getAppWidgetOptions(widget);expanded=useExpanded(expanded,options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH),(int)(options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)/Math.max(1f,c.getResources().getConfiguration().fontScale)));
         RemoteViews v=new RemoteViews(c.getPackageName(),id(c,"layout",expanded?"study_widget_expanded":"study_widget_compact"));
+        int[] streak=StreakRules.calculate(s,Calendar.getInstance());String sequence=streak[0]+(streak[0]==1?" dia":" dias")+" de ofensiva";
+        v.setTextViewText(id(c,"id","study_streak"),sequence);v.setContentDescription(id(c,"id","study_root"),sequence+". Recorde: "+streak[1]+" dias. Toque para estudar.");
+        v.setTextColor(id(c,"id","study_streak"),Color.parseColor(streak[3]==1?"#FFCA8B":streak[2]==1?"#8CDBBE":"#B7C8D1"));
+        if(expanded){v.setTextViewText(id(c,"id","study_status"),streak[3]==1?"Em risco: conclua uma etapa hoje":streak[2]==1?"✓ Ofensiva mantida hoje · Recorde: "+streak[1]:"Conclua uma etapa para começar");}
         String level=s.optString("name","Iniciante");int xp=Math.max(0,s.optInt("xp",0)),percent=Math.max(0,Math.min(100,s.optInt("percent",0)));
         v.setTextViewText(id(c,"id","study_level"),"Nível "+s.optInt("index",1)+" · "+level);
         v.setTextViewText(id(c,"id","study_xp"),xp+" XP");v.setProgressBar(id(c,"id","study_progress"),100,percent,false);

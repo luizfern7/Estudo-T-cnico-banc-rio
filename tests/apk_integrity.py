@@ -4,7 +4,7 @@ from zipfile import ZipFile
 import subprocess,re,json
 ROOT=Path(__file__).resolve().parents[1]
 TOOLS=Path('/workspace/android-tools/android-15')
-APK=Path('/workspace/artifacts/estudo-para-concurso-v1.2.apk')
+APK=Path('/workspace/artifacts/estudo-para-concurso-v1.3.apk')
 def run(*args):return subprocess.check_output([str(a) for a in args],text=True)
 with ZipFile(APK) as z:
  assert z.testzip() is None
@@ -13,13 +13,15 @@ with ZipFile(APK) as z:
  assert json.loads(z.read('assets/capacitor.config.json'))['appId']=='br.com.campusestudos.banestes'
  assert b'Lbr/com/campusestudos/banestes/evolution/StudyWidget;' in z.read('classes5.dex')
  assert b'Landroid/webkit/JavascriptInterface;' in z.read('classes5.dex')
+ assert b'Lbr/com/campusestudos/banestes/evolution/StreakRules;' in z.read('classes5.dex')
+ assert b'Lbr/com/campusestudos/banestes/evolution/StreakReminder;' in z.read('classes5.dex')
  for resource in ['layout/study_widget_compact.xml','layout/study_widget_expanded.xml','xml/study_widget_compact_info.xml','xml/study_widget_expanded_info.xml','mipmap-anydpi-v33/study_icon.xml']:
   assert 'res/'+resource in z.namelist(),resource
 meta=run(TOOLS/'aapt2','dump','badging',APK)
-assert "versionCode='3'" in meta and "versionName='1.2'" in meta
+assert "versionCode='4'" in meta and "versionName='1.3'" in meta
 assert "application-label:'Estudo para Concurso'" in meta
 manifest=run(TOOLS/'aapt2','dump','xmltree',APK,'--file','AndroidManifest.xml')
-for name in ['StudyWidget','ExpandedStudyWidget','android.appwidget.provider']:assert name in manifest
+for name in ['StudyWidget','ExpandedStudyWidget','android.appwidget.provider','StreakReminder','android.permission.POST_NOTIFICATIONS','android.permission.RECEIVE_BOOT_COMPLETED']:assert name in manifest
 cert=run(TOOLS/'apksigner','verify','--print-certs',APK)
 old_cert=run(TOOLS/'apksigner','verify','--print-certs',ROOT/'downloads/campus-estudos-banestes-feedback-debug.apk')
 pattern=r'Signer #1 certificate SHA-256 digest: (\w+)'
@@ -28,4 +30,4 @@ run(TOOLS/'zipalign','-c','-P','16','4',APK)
 old=run('git','-C',ROOT,'show','476d991db9af9c1b766fbfe51e39e9677b4b1e48:index.html')
 get=lambda text:re.search(r'<script>window.COURSE_DATA=(.*?);</script>',text,re.S).group(1)
 assert get(old)==get((ROOT/'index.html').read_text())
-print('PASS: APK íntegro, assets correspondem ao código testado, conteúdo básico idêntico, providers/ícones/DEX presentes, applicationId preservado, versão 1.2/3, assinatura compatível e alinhamento verificado.')
+print('PASS: APK íntegro, assets correspondem ao código testado, conteúdo básico idêntico, providers/ícones/DEX presentes, applicationId preservado, versão 1.3/4, assinatura compatível e alinhamento verificado.')

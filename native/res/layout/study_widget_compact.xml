@@ -1,6 +1,9 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/study_root" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:gravity="center_vertical" android:background="@drawable/study_widget_background">
-<TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="📖 Minha Evolução" android:textSize="12sp" android:textColor="#BCE2EC"/>
-<TextView android:id="@+id/study_level" android:layout_width="match_parent" android:layout_height="wrap_content" android:maxLines="1" android:ellipsize="end" android:text="Iniciante" android:textSize="13sp" android:textStyle="bold" android:textColor="#FFFFFF"/>
-<TextView android:id="@+id/study_xp" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="0 XP" android:textSize="12sp" android:textColor="#FFFFFF"/>
-<ProgressBar android:id="@+id/study_progress" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="5dp" android:max="100" android:progressTint="#66C9C4" android:progressBackgroundTint="#344653"/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/study_root" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="horizontal" android:gravity="center_vertical" android:padding="10dp" android:elevation="3dp" android:background="@drawable/study_widget_background">
+<ImageView android:layout_width="26dp" android:layout_height="30dp" android:layout_marginEnd="8dp" android:src="@drawable/study_flame" android:importantForAccessibility="no"/>
+<LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical">
+<TextView android:includeFontPadding="false" android:id="@+id/study_streak" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="0 dias de ofensiva" android:maxLines="1" android:ellipsize="end" android:textSize="14sp" android:textStyle="bold" android:textColor="#FFCA8B"/>
+<TextView android:includeFontPadding="false" android:id="@+id/study_level" android:layout_width="match_parent" android:layout_height="wrap_content" android:maxLines="1" android:ellipsize="end" android:text="Nível 1 · Iniciante" android:textSize="10sp" android:textColor="#E1EDF1"/>
+<TextView android:includeFontPadding="false" android:id="@+id/study_xp" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="0 XP" android:textSize="10sp" android:textColor="#BCE2EC"/>
+<ProgressBar android:id="@+id/study_progress" style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="4dp" android:max="100" android:progressTint="#66C9C4" android:progressBackgroundTint="#344653"/>
+</LinearLayout>
 </LinearLayout>
