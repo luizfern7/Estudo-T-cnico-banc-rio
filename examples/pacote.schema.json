@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pacote de estudo v1",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "packageId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "not": {
+        "enum": [
+          "__proto__",
+          "prototype",
+          "constructor"
+        ]
+      }
+    },
+    "titulo": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "disciplinas": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "not": {
+              "enum": [
+                "__proto__",
+                "prototype",
+                "constructor"
+              ]
+            }
+          },
+          "nome": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "modulos": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 80,
+                  "pattern": "^[a-zA-Z0-9_-]+$",
+                  "not": {
+                    "enum": [
+                      "__proto__",
+                      "prototype",
+                      "constructor"
+                    ]
+                  }
+                },
+                "titulo": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "etapas": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 80,
+                        "pattern": "^[a-zA-Z0-9_-]+$",
+                        "not": {
+                          "enum": [
+                            "__proto__",
+                            "prototype",
+                            "constructor"
+                          ]
+                        }
+                      },
+                      "titulo": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 300
+                      },
+                      "assunto": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 300
+                      },
+                      "conteudo": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 100000
+                      },
+                      "questoes": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 80,
+                              "pattern": "^[a-zA-Z0-9_-]+$",
+                              "not": {
+                                "enum": [
+                                  "__proto__",
+                                  "prototype",
+                                  "constructor"
+                                ]
+                              }
+                            },
+                            "enunciado": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 20000
+                            },
+                            "alternativas": {
+                              "type": "array",
+                              "minItems": 2,
+                              "items": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 20000
+                              },
+                              "maxItems": 8
+                            },
+                            "respostaCorreta": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 7
+                            },
+                            "explicacao": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 20000
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "enunciado",
+                            "alternativas",
+                            "respostaCorreta",
+                            "explicacao"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "titulo",
+                      "questoes"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "titulo",
+                "etapas"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "nome",
+          "modulos"
+        ]
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "packageId",
+    "titulo",
+    "disciplinas"
+  ],
+  "$comment": "A aplicação também verifica duplicidade de IDs e que respostaCorreta seja menor que alternativas.length."
+}

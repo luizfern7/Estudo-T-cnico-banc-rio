@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "packageId": "matematica-basica-01",
+  "titulo": "Matemática Básica",
+  "disciplinas": [{
+    "id": "matematica",
+    "nome": "Matemática",
+    "modulos": [{
+      "id": "operacoes",
+      "titulo": "Operações Básicas",
+      "etapas": [{
+        "id": "soma-01",
+        "titulo": "Adição",
+        "assunto": "Operações com números naturais",
+        "conteudo": "Somar é reunir quantidades. Para calcular 15 + 8, podemos somar 5 e depois 3: 15 + 5 = 20 e 20 + 3 = 23.",
+        "questoes": [{
+          "id": "q001",
+          "enunciado": "Quanto é 15 + 8?",
+          "alternativas": ["21", "22", "23", "24", "25"],
+          "respostaCorreta": 2,
+          "explicacao": "A resposta correta é C: 23.\nA e B ficam abaixo da soma; D e E a ultrapassam. 15 + 8 = 23."
+        }]
+      }, {
+        "id": "subtracao-01",
+        "titulo": "Subtração",
+        "conteudo": "Subtrair é retirar uma quantidade de outra. De 20, retirando 7, restam 13.",
+        "questoes": [{
+          "id": "q002", "enunciado": "Quanto é 20 − 7?",
+          "alternativas": ["12", "13", "14"], "respostaCorreta": 1,
+          "explicacao": "20 − 7 = 13: alternativa B."
+        }]
+      }]
+    }]
+  }]
+}

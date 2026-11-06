@@ -1,0 +1,10 @@
+(function(root){
+'use strict';
+let connection;
+function db(){if(connection)return connection;connection=new Promise((resolve,reject)=>{const r=indexedDB.open('estudo-concurso-content',1);r.onupgradeneeded=()=>r.result.createObjectStore('packages',{keyPath:'packageId'});r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(Error('Não foi possível abrir o armazenamento de conteúdos'))});return connection}
+async function all(){const d=await db();return new Promise((resolve,reject)=>{const r=d.transaction('packages').objectStore('packages').getAll();r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+async function write(packs,remove=[]){const d=await db();return new Promise((resolve,reject)=>{const t=d.transaction('packages','readwrite');t.oncomplete=resolve;t.onerror=()=>reject(t.error||Error('Falha ao salvar conteúdo'));t.onabort=()=>reject(t.error||Error('Importação cancelada; nada foi alterado'));const store=t.objectStore('packages');try{for(const p of packs)store.put(p);for(const id of remove)store.delete(id)}catch(error){t.abort();reject(error)}})}
+function parse(file){if(file.size>20*1024*1024)return Promise.reject(Error('O arquivo excede 20 MB. Divida-o em pacotes menores.'));return new Promise((resolve,reject)=>{const worker=new Worker('content-validator.js');const finish=()=>worker.terminate();worker.onmessage=e=>{finish();e.data.ok?resolve(e.data.pack):reject(Error(e.data.error))};worker.onerror=()=>{finish();reject(Error('Falha ao ler o JSON. Confira o formato e tente novamente.'))};file.text().then(text=>worker.postMessage(text),e=>{finish();reject(e)})})}
+function assertUpdate(old,pack){if(!old)return;const ids=new Set(pack.modules.flatMap(m=>m.lessons.map(l=>l.id)));const qs=new Set(pack.questions.map(q=>q.id));if(old.modules.some(m=>m.lessons.some(l=>!ids.has(l.id)))||old.questions.some(q=>!qs.has(q.id)))throw Error('Esta atualização removeria etapas ou questões existentes. Mantenha seus identificadores; para excluir, use Remover pacote com confirmação.');}
+root.StudyContent={all,write,parse,assertUpdate};
+})(globalThis);

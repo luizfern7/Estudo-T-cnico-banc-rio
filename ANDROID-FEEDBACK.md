@@ -1,3 +1,5 @@
+> Histórico da versão 1.1. A continuação atual está em [Evolução e Android](docs/EVOLUCAO-ANDROID.md).
+
 # Continuidade do APK — feedback das questões
 
 A base desta alteração foi recuperada de `assets/public/index.html` do APK
