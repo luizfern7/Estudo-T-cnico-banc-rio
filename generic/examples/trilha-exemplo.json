@@ -1,0 +1,42 @@
+{
+  "versao_schema": 1,
+  "trilha": {
+    "id": "minha-trilha",
+    "nome": "Minha trilha de estudos",
+    "descricao": "Substitua pelos seus próprios conteúdos. Este modelo não é importado automaticamente."
+  },
+  "conteudos": [
+    {
+      "id": "leitura-01",
+      "titulo": "Meu primeiro assunto",
+      "tipo": "leitura",
+      "disciplina": "Minha disciplina",
+      "conteudo": "Escreva aqui o texto que você deseja estudar."
+    },
+    {
+      "id": "exercicio-01",
+      "titulo": "Prática do assunto",
+      "tipo": "questao",
+      "disciplina": "Minha disciplina",
+      "enunciado": "Substitua por sua pergunta.",
+      "alternativas": ["Primeira alternativa", "Segunda alternativa", "Terceira alternativa"],
+      "resposta_correta": 1,
+      "explicacao": "Substitua por uma explicação da resposta e das alternativas."
+    },
+    {
+      "id": "licao-02",
+      "titulo": "Lição com leitura e exercícios",
+      "tipo": "licao",
+      "conteudo": "Escreva a explicação da sua próxima lição.",
+      "questoes": [
+        {
+          "id": "q01",
+          "enunciado": "Sua questão complementar.",
+          "alternativas": ["Alternativa A", "Alternativa B"],
+          "resposta_correta": 0,
+          "explicacao": "Sua explicação."
+        }
+      ]
+    }
+  ]
+}

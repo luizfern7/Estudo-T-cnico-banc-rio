@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Jornada de Estudos - esquema 1",
+  "type": "object",
+  "required": [
+    "versao_schema",
+    "trilha",
+    "conteudos"
+  ],
+  "properties": {
+    "versao_schema": {
+      "const": 1
+    },
+    "trilha": {
+      "type": "object",
+      "required": [
+        "id",
+        "nome"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "nome": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "descricao": {
+          "type": "string",
+          "maxLength": 2000
+        }
+      }
+    },
+    "conteudos": {
+      "type": "array",
+      "maxItems": 10000,
+      "items": {
+        "$ref": "#/$defs/content"
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "not": {
+        "enum": [
+          "__proto__",
+          "prototype",
+          "constructor"
+        ]
+      }
+    },
+    "question": {
+      "type": "object",
+      "required": [
+        "enunciado",
+        "alternativas",
+        "resposta_correta",
+        "explicacao"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "enunciado": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000
+        },
+        "alternativas": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 8,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 20000
+          }
+        },
+        "resposta_correta": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7
+        },
+        "explicacao": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000
+        }
+      }
+    },
+    "content": {
+      "type": "object",
+      "required": [
+        "id",
+        "titulo"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "titulo": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "tipo": {
+          "enum": [
+            "leitura",
+            "licao",
+            "etapa",
+            "questao"
+          ]
+        },
+        "disciplina": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "conteudo": {
+          "type": "string",
+          "maxLength": 100000
+        },
+        "questoes": {
+          "type": "array",
+          "maxItems": 200,
+          "items": {
+            "$ref": "#/$defs/question"
+          }
+        },
+        "enunciado": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000
+        },
+        "alternativas": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 8,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 20000
+          }
+        },
+        "resposta_correta": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 7
+        },
+        "explicacao": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000
+        }
+      }
+    }
+  },
+  "$comment": "O validador do aplicativo também verifica IDs duplicados, resposta_correta < alternativas.length e conteúdo de estudo não vazio (texto ou questões)."
+}
