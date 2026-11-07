@@ -14,11 +14,11 @@ original=sections(Path('/workspace/windows-tools/electron-win/electron.exe').rea
 assert struct.unpack_from('<II',data,optional+112+4*8)==(0,0),'Assinatura antiga não deve permanecer inválida'
 app=dist/'resources/app';web=app/'web'
 for name in ['model.js','store.js','streak.js','styles.css','variant.css']:assert (web/name).read_bytes()==(ROOT/'generic'/name).read_bytes(),name
-for name in ['main.cjs','portable.cjs','preload.cjs']:assert (app/name).read_bytes()==(ROOT/'windows'/name).read_bytes(),name
+for name in ['main.cjs','portable.cjs','preload.cjs','json-file.cjs']:assert (app/name).read_bytes()==(ROOT/'windows'/name).read_bytes(),name
 assert 'window.JornadaDesktop?.saveJson' in (web/'app.js').read_text();assert not (dist/'Dados/Perfil').exists()
 manifest=json.loads((dist/'ARQUIVOS.sha256.json').read_text())
 for name,digest in manifest.items():assert hashlib.sha256((dist/name).read_bytes()).hexdigest()==digest,name
-with ZipFile('/workspace/artifacts/Jornada-de-Estudos-Windows-x64-v1.0.zip') as z:
+with ZipFile('/workspace/artifacts/Jornada-de-Estudos-Windows-x64-v1.0.1.zip') as z:
  assert z.testzip() is None
  assert all(name.startswith(dist.name+'/') for name in z.namelist())
  assert any(name.endswith('/JornadaDeEstudos.exe') for name in z.namelist())

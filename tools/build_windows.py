@@ -4,7 +4,7 @@ Os arquivos de negócio vêm da variante Android generic/. Não exige Windows pa
 from pathlib import Path
 from zipfile import ZipFile,ZIP_DEFLATED
 import argparse,shutil,json,hashlib,subprocess
-p=argparse.ArgumentParser(description=__doc__);p.add_argument('--tools',type=Path,default=Path('/workspace/windows-tools'));p.add_argument('--output',type=Path,default=Path('/workspace/artifacts/Jornada-de-Estudos-Windows'));p.add_argument('--zip',type=Path,default=Path('/workspace/artifacts/Jornada-de-Estudos-Windows-x64-v1.0.zip'));args=p.parse_args()
+p=argparse.ArgumentParser(description=__doc__);p.add_argument('--tools',type=Path,default=Path('/workspace/windows-tools'));p.add_argument('--output',type=Path,default=Path('/workspace/artifacts/Jornada-de-Estudos-Windows'));p.add_argument('--zip',type=Path,default=Path('/workspace/artifacts/Jornada-de-Estudos-Windows-x64-v1.0.1.zip'));args=p.parse_args()
 root=Path(__file__).resolve().parents[1];source=root/'windows';version=json.loads((source/'package.json').read_text())['config']['electronVersion'];runtime=args.tools/'electron-win.zip'
 expected=next(s.split()[0] for s in (args.tools/'SHASUMS256.txt').read_text().splitlines() if s.endswith(f'electron-v{version}-win32-x64.zip'))
 assert hashlib.sha256(runtime.read_bytes()).hexdigest()==expected,'Checksum do runtime não confere'
@@ -18,7 +18,7 @@ with ZipFile(runtime) as z:
   if item.filename.startswith('locales/') and item.filename not in ['locales/pt-BR.pak','locales/en-US.pak']:continue
   dest=args.output/item.filename;dest.parent.mkdir(parents=True,exist_ok=True);dest.write_bytes(z.read(item))
 app=args.output/'resources/app';app.mkdir(parents=True,exist_ok=True)
-for name in ['main.cjs','preload.cjs','portable.cjs','package.json']:shutil.copy2(source/name,app/name)
+for name in ['main.cjs','preload.cjs','portable.cjs','json-file.cjs','package.json']:shutil.copy2(source/name,app/name)
 shutil.copy2(source/'assets/book.ico',app/'book.ico')
 web=app/'web';web.mkdir()
 for name in ['index.html','app.js','model.js','store.js','streak.js','styles.css','variant.css']:shutil.copy2(root/'generic'/name,web/name)

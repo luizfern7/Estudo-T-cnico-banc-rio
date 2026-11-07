@@ -19,7 +19,7 @@ async function launch(root){const app=await _electron.launch({executablePath:run
  console.log('Teclado e conclusão OK');
  // Menu nativo e atalho Ctrl+O usam o mesmo seletor de arquivo da versão Android.
  const pack={versao_schema:1,trilha:{id:'json-desktop',nome:'JSON do Android'},conteudos:[{id:'texto',titulo:'Leitura importada',tipo:'leitura',conteudo:'Material compatível entre Android e Windows.'}]};const jsonFile=path.join(base,'conteudo.json');fs.writeFileSync(jsonFile,JSON.stringify(pack));
- const chooser=page.waitForEvent('filechooser');await app.evaluate(({Menu})=>Menu.getApplicationMenu().items[0].submenu.items[0].click());const fileChooser=await chooser;await fileChooser.setFiles(jsonFile);await page.waitForSelector('#import-preview h2');await click('confirm-import');await idle();assert.equal((await snapshot()).tracks.length,2);
+ await app.evaluate(({dialog},file)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[file]})},jsonFile);await app.evaluate(({Menu})=>Menu.getApplicationMenu().items[0].submenu.items[0].click());await page.waitForSelector('#import-preview h2');await click('confirm-import');await idle();assert.equal((await snapshot()).tracks.length,2);
  console.log('Importação por arquivo OK');
  // Texto colado, continuação e ausência de duplicatas.
  const extra=structuredClone(pack);extra.conteudos.push({id:'nova',titulo:'Nova etapa',tipo:'leitura',conteudo:'Continuação.'});await click('import');await page.locator('#json-text').fill(JSON.stringify(extra));await click('validate-json');await idle();await click('confirm-import');await idle();assert.equal((await snapshot()).contents.filter(c=>c.trackId==='json-desktop').length,2);

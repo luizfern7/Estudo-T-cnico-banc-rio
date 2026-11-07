@@ -1,4 +1,4 @@
-# Jornada de Estudos — Windows portátil 1.0
+# Jornada de Estudos — Windows portátil 1.0.1
 
 Distribuição para **Windows 10/11 de 64 bits**. Extraia a pasta completa do ZIP e
 abra **JornadaDeEstudos.exe**. Não precisa instalar Node.js, Python, Java, Android,
@@ -137,3 +137,23 @@ Diálogos de confirmação/salvamento são controlados no teste. O executável W
 foi gerado e inspecionado, mas **não executado em Windows 10/11 real**: não há
 Windows ou Wine disponível neste ambiente. A confirmação final de instalação
 zero e de diálogos do sistema será feita no computador Windows do usuário.
+
+
+## Atualização 1.0.1 — importação de arquivos Windows
+
+O seletor de arquivos usa agora o diálogo nativo do Windows e leitura direta do
+arquivo selecionado, com indicação de nome, tamanho, codificação e versão lida.
+Aceita UTF-8 com/sem BOM e UTF-16 LE/BE. A versão textual `"1"` é normalizada
+para o número `1`; outras versões ou campos ausentes não são aceitos em silêncio.
+Esquemas JSON, backups e manifestos do programa recebem instruções específicas.
+Uma seleção inválida descarta a prévia anterior sem alterar os dados de estudo.
+O cache de arquivos do programa é limpo ao abrir, sem apagar IndexedDB ou progresso.
+
+O arquivo fornecido pelo usuário, com 20 questões de interpretação de textos,
+foi importado no runtime Electron pelo novo caminho nativo. Esse arquivo já era
+válido; a falha relatada não foi reproduzida com o anexo no leitor anterior.
+A atualização torna a leitura e o diagnóstico verificáveis no computador do usuário.
+
+Para atualizar preservando os dados: feche o programa, extraia a nova versão em
+outra pasta e copie para ela a pasta **Dados** da versão anterior. A origem local
+e o esquema do banco são os mesmos. Não copie enquanto o programa estiver aberto.

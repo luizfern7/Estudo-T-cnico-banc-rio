@@ -1,4 +1,4 @@
-JORNADA DE ESTUDOS — WINDOWS PORTÁTIL 1.0 (64 bits)
+JORNADA DE ESTUDOS — WINDOWS PORTÁTIL 1.0.1 (64 bits)
 
 1. Extraia TODOS os arquivos do ZIP para uma pasta com permissão de gravação.
 2. Abra JornadaDeEstudos.exe. Não execute diretamente de dentro do ZIP.
@@ -36,3 +36,6 @@ TESTES
 Os fluxos e a portabilidade dos dados foram testados no runtime Electron em
 Linux e os arquivos Windows foram gerados e verificados como PE x64.
 Ainda é necessária a conferência em Windows 10/11 real neste ambiente de entrega.
+
+ATUALIZAÇÃO: feche o programa, extraia esta versão em outra pasta e copie para
+ela a pasta Dados da versão anterior. Não apague seus dados antigos antes de conferir.

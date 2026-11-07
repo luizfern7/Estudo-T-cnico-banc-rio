@@ -2,6 +2,7 @@
 const {app,BrowserWindow,protocol,net,session,dialog,ipcMain,Menu}=require('electron');
 const path=require('node:path'),fs=require('node:fs'),{pathToFileURL}=require('node:url');
 const Portable=require('./portable.cjs');
+const JsonFile=require('./json-file.cjs');
 app.setName('Jornada de Estudos');
 // As pastas são definidas antes da primeira sessão do Chromium. Sem AppData obrigatório.
 const root=app.isPackaged?path.dirname(process.execPath):(process.env.JORNADA_TEST_DATA||path.resolve(__dirname,'..','DadosDesenvolvimento'));
@@ -16,7 +17,7 @@ function menus(){Menu.setApplicationMenu(Menu.buildFromTemplate([
  {label:'Arquivo',submenu:[{label:'Importar JSON…',accelerator:'CommandOrControl+O',click:()=>send('open-json')},{label:'Backup completo…',accelerator:'CommandOrControl+Shift+B',click:()=>send('backup')},{type:'separator'},{label:'Fechar',role:'quit',accelerator:'Alt+F4'}]},
  {label:'Editar',submenu:[{role:'undo',label:'Desfazer'},{role:'redo',label:'Refazer'},{type:'separator'},{role:'cut',label:'Recortar'},{role:'copy',label:'Copiar'},{role:'paste',label:'Colar'},{role:'selectAll',label:'Selecionar tudo'}]},
  {label:'Exibir',submenu:[{role:'resetZoom',label:'Zoom padrão'},{role:'zoomIn',label:'Aumentar zoom'},{role:'zoomOut',label:'Diminuir zoom'},{type:'separator'},{role:'togglefullscreen',label:'Tela inteira',accelerator:'F11'}]},
- {label:'Ajuda',submenu:[{label:'Atalhos de teclado',click:()=>dialog.showMessageBox(win,{type:'info',title:'Atalhos',message:'Jornada de Estudos',detail:'Ctrl+O — importar JSON\nCtrl+Shift+B — backup completo\n1 a 5 — selecionar alternativa\nEnter — confirmar resposta ou concluir a etapa\nEsc — voltar\nF11 — tela inteira\nCtrl+ + / Ctrl+ - — zoom\n\nOs atalhos de estudo não interferem nos campos de digitação.'})},{label:'Sobre',click:()=>dialog.showMessageBox(win,{type:'info',title:'Jornada de Estudos',message:'Jornada de Estudos · Windows portátil 1.0',detail:'Todos os conteúdos, progressos e configurações ficam na pasta Dados, ao lado do executável.\n\nFeche o programa antes de copiar ou mover a pasta completa. Não mova apenas o executável.'})}]}
+ {label:'Ajuda',submenu:[{label:'Atalhos de teclado',click:()=>dialog.showMessageBox(win,{type:'info',title:'Atalhos',message:'Jornada de Estudos',detail:'Ctrl+O — importar JSON\nCtrl+Shift+B — backup completo\n1 a 5 — selecionar alternativa\nEnter — confirmar resposta ou concluir a etapa\nEsc — voltar\nF11 — tela inteira\nCtrl+ + / Ctrl+ - — zoom\n\nOs atalhos de estudo não interferem nos campos de digitação.'})},{label:'Sobre',click:()=>dialog.showMessageBox(win,{type:'info',title:'Jornada de Estudos',message:'Jornada de Estudos · Windows portátil 1.0.1',detail:'Todos os conteúdos, progressos e configurações ficam na pasta Dados, ao lado do executável.\n\nFeche o programa antes de copiar ou mover a pasta completa. Não mova apenas o executável.'})}]}
  ]))}
 async function create(){
  win=new BrowserWindow({width:1280,height:840,minWidth:720,minHeight:560,title:'Jornada de Estudos',backgroundColor:'#f5f7fb',show:false,icon:path.join(__dirname,'book.ico'),webPreferences:{preload:path.join(__dirname,'preload.cjs'),contextIsolation:true,nodeIntegration:false,sandbox:true,webSecurity:true,spellcheck:false}});
@@ -30,9 +31,17 @@ async function create(){
 if(!app.requestSingleInstanceLock()){app.exit(0)}else{
  app.on('second-instance',()=>{if(win){if(win.isMinimized())win.restore();win.focus()}});
  app.whenReady().then(async()=>{
-  protocol.handle('jornada',async request=>{const url=new URL(request.url),file=url.pathname==='/'?'index.html':url.pathname.slice(1);if(url.host!=='app'||!files.has(file))return new Response('Arquivo indisponível',{status:404});const response=await net.fetch(pathToFileURL(path.join(__dirname,'web',file)).toString());const headers=new Headers(response.headers);headers.set('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; worker-src 'self'; connect-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'");return new Response(response.body,{status:response.status,headers})});
+  await session.defaultSession.clearCache(); // Só cache HTTP: não altera IndexedDB ou progresso.
+  protocol.handle('jornada',async request=>{const url=new URL(request.url),file=url.pathname==='/'?'index.html':url.pathname.slice(1);if(url.host!=='app'||!files.has(file))return new Response('Arquivo indisponível',{status:404});const response=await net.fetch(pathToFileURL(path.join(__dirname,'web',file)).toString());const headers=new Headers(response.headers);headers.set('Cache-Control','no-store');headers.set('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; worker-src 'self'; connect-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'");return new Response(response.body,{status:response.status,headers})});
   session.defaultSession.setPermissionRequestHandler((_web,_permission,callback)=>callback(false));
   session.defaultSession.setPermissionCheckHandler(()=>false);
+  ipcMain.handle('jornada:open-json',async event=>{
+   if(!win||event.sender!==win.webContents||!own(event.senderFrame.url))throw Error('Origem não autorizada.');
+   const result=await dialog.showOpenDialog(win,{title:'Selecionar JSON da trilha',defaultPath:app.getPath('downloads'),filters:[{name:'Conteúdo JSON',extensions:['json']}],properties:['openFile']});
+   if(result.canceled||!result.filePaths.length)return null;
+   const selected=result.filePaths[0],stat=await fs.promises.stat(selected);if(!stat.isFile()||stat.size>20*1024*1024)throw Error('Selecione um arquivo JSON de até 20 MB.');
+   return JsonFile.inspect(await fs.promises.readFile(selected),path.basename(selected));
+  });
   ipcMain.handle('jornada:save-json',async(event,request)=>{
    if(!win||event.sender!==win.webContents||!own(event.senderFrame.url))throw Error('Origem não autorizada.');
    if(!request||typeof request.text!=='string'||Buffer.byteLength(request.text)>20*1024*1024)throw Error('Exportação inválida ou maior que 20 MB.');

@@ -7,8 +7,8 @@ const ico=RE.Data.IconFile.from(fs.readFileSync(icon));
 const groups=RE.Resource.IconGroupEntry.fromEntries(res.entries);if(!groups.length)throw Error('Executável sem grupo de ícone');
 for(const group of groups)RE.Resource.IconGroupEntry.replaceIconsForResource(res.entries,group.id,group.lang,ico.icons.map(item=>item.data));
 for(const vi of RE.Resource.VersionInfo.fromEntries(res.entries)){
- vi.setFileVersion(1,0,0,0,1033);vi.setProductVersion(1,0,0,0,1033);
- for(const lang of vi.getAllLanguagesForStringValues())vi.setStringValues(lang,{CompanyName:'Jornada de Estudos',FileDescription:'Jornada de Estudos — Windows portátil',ProductName:'Jornada de Estudos',InternalName:'JornadaDeEstudos',OriginalFilename:'JornadaDeEstudos.exe',LegalCopyright:'Jornada de Estudos',ProductVersion:'1.0.0',FileVersion:'1.0.0.0'});
+ vi.setFileVersion(1,0,1,0,1033);vi.setProductVersion(1,0,1,0,1033);
+ for(const lang of vi.getAllLanguagesForStringValues())vi.setStringValues(lang,{CompanyName:'Jornada de Estudos',FileDescription:'Jornada de Estudos — Windows portátil',ProductName:'Jornada de Estudos',InternalName:'JornadaDeEstudos',OriginalFilename:'JornadaDeEstudos.exe',LegalCopyright:'Jornada de Estudos',ProductVersion:'1.0.1',FileVersion:'1.0.1.0'});
  vi.outputToResourceEntries(res.entries);
 }
 res.outputResource(exe);fs.writeFileSync(output,Buffer.from(exe.generate()));
