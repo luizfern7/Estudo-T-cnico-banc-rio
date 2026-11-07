@@ -1,0 +1,3 @@
+const {_electron}=require('playwright');
+const fs=require('node:fs');
+(async()=>{const root=fs.mkdtempSync('/tmp/jornada-electron-check-');const app=await _electron.launch({executablePath:'/workspace/windows-tools/electron-linux/electron',args:['--no-sandbox','--ozone-platform=headless','/workspace/artifacts/Jornada-de-Estudos-Windows/resources/app'],env:{...process.env,JORNADA_TEST_DATA:root},timeout:30000});const page=await app.firstWindow();await page.waitForSelector('.empty-state');console.log(await page.title());console.log(await app.evaluate(({app})=>({profile:app.getPath('userData'),session:app.getPath('sessionData')})));await page.screenshot({path:'/tmp/jornada-desktop-first.png'});await app.close()})().catch(e=>{console.error(e.message);process.exitCode=1});

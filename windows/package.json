@@ -1,0 +1,10 @@
+{
+  "name": "jornada-de-estudos-desktop",
+  "productName": "Jornada de Estudos",
+  "version": "1.0.0",
+  "description": "Edição Windows portátil da Jornada de Estudos",
+  "main": "main.cjs",
+  "private": true,
+  "license": "UNLICENSED",
+  "config": { "electronVersion": "45.2.3" }
+}

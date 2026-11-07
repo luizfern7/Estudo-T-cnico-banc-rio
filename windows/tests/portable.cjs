@@ -1,0 +1,5 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),P=require('../portable.cjs');
+(async()=>{const root=fs.mkdtempSync('/tmp/jornada-paths-'),folder=path.join(root,'Pasta com acentuação á');const p=P.prepare(folder);for(const key of ['data','profile','session','temp','logs','crashes'])assert.ok(fs.existsSync(p[key])&&p[key].startsWith(folder));const blocked=path.join(root,'sem-gravacao');fs.mkdirSync(blocked);fs.chmodSync(blocked,0o555);assert.throws(()=>P.prepare(blocked));fs.chmodSync(blocked,0o755);
+const file=path.join(folder,'backup.json');await P.atomicWrite(file,'{"n":1}');await P.atomicWrite(file,'{"n":2}');assert.equal(JSON.parse(fs.readFileSync(file)).n,2);assert.equal(fs.readdirSync(folder).filter(f=>f.endsWith('.tmp')).length,0);
+assert.equal(P.safeName('../../invalido.txt'),'jornada.json');assert.equal(P.safeName('trilha.json'),'trilha.json');assert.ok(!P.safeName('pasta\\arquivo.json').includes('\\'));
+console.log('PASS: caminhos relativos, Unicode, escrita atômica, pasta não gravável e nomes seguros de exportação.');})().catch(e=>{console.error(e);process.exitCode=1});

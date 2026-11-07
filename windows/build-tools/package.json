@@ -1,0 +1,7 @@
+{
+  "name": "jornada-windows-build-tools",
+  "private": true,
+  "dependencies": {
+    "resedit": "3.1.0"
+  }
+}

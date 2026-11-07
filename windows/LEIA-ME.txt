@@ -1,0 +1,38 @@
+JORNADA DE ESTUDOS — WINDOWS PORTÁTIL 1.0 (64 bits)
+
+1. Extraia TODOS os arquivos do ZIP para uma pasta com permissão de gravação.
+2. Abra JornadaDeEstudos.exe. Não execute diretamente de dentro do ZIP.
+3. Crie trilhas ou importe os mesmos arquivos JSON usados na versão Android.
+
+Não é necessário instalar Python, Java, Node.js, Android ou outro ambiente de
+execução. O motor do aplicativo está incluído nesta pasta. Funciona offline.
+
+DADOS PORTÁTEIS
+Todos os conteúdos, conclusões, respostas, ofensiva e configurações ficam na
+pasta Dados, ao lado do executável. Feche o aplicativo antes de copiar ou mover
+a pasta COMPLETA para outro local, pendrive ou computador Windows.
+Não mova apenas o .exe. Não apague os arquivos .dll ou a pasta resources.
+
+CONTEÚDO E PROGRESSO
+O app começa sem conteúdo pronto. Os JSONs de trilha são compatíveis com Android.
+Exportar uma trilha compartilha somente conteúdo; backup completo inclui também
+seu progresso e histórico. Use o backup completo do Android para trazer seus
+estudos para o computador, ou o backup Windows para restaurar no Android.
+A transferência é manual; não há sincronização automática.
+
+ATALHOS
+Ctrl+O: importar JSON. Ctrl+Shift+B: exportar backup completo.
+1 a 5: selecionar alternativa. Enter: confirmar resposta ou concluir etapa.
+Esc: voltar. F11: tela inteira. Ctrl+ + / Ctrl+ -: ajustar zoom.
+Os atalhos de estudo não interferem nos campos de texto.
+
+ATUALIZAÇÕES E SEGURANÇA
+Esta distribuição não tem instalador, atualização automática, coleta de dados
+ou cadastro no Registro. Não precisa de permissões de administrador.
+O executável não possui certificado comercial Authenticode; o Windows pode
+mostrar um aviso de editor desconhecido. Confira a origem e o checksum do ZIP.
+
+TESTES
+Os fluxos e a portabilidade dos dados foram testados no runtime Electron em
+Linux e os arquivos Windows foram gerados e verificados como PE x64.
+Ainda é necessária a conferência em Windows 10/11 real neste ambiente de entrega.
